@@ -1,0 +1,16 @@
+{
+    "name": "matok/hts-prog-3",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "D0ktor",
+            "email": "mat.kuna@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^3.3"
+    },
+    "autoload": {
+        "files": ["ReverseEncryptionCommand.php", "ReverseEncryptor.php", "prog3.php"]
+    }
+}

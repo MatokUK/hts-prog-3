@@ -42,12 +42,24 @@ class ReverseEncryptionCommand extends \Symfony\Component\Console\Command\Comman
                 break;
 
             case 'decrypt':
-                $str = 'A';
-                for ($i = 0; $i < 100; $i ++) {
-                    echo $str.' ';
-                    $str ++;
-
+                $primes = [2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61 ,67 ,71, 73 ,79, 83, 89 ,97 ,101];
+                foreach ($primes as $prime) {
+                    echo $prime.":";
+                    var_dump(532717637 / $prime);
+                    echo "\n";
                 }
+                exit;
+
+                $sumVector = $this->getPobabilitySumVector();
+
+                $combination = new Combination(array($sumVector, '0123456789abcdef', '0123456789abcdef', '0123456789abcdef'));
+
+                do {
+                    var_dump($combination->current());
+                    echo "\n";
+                   $combination->next();
+                } while ($combination->valid());
+
                 exit;
                 $codes = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.'codes.txt');
                 $encoded = encryptString($codes, $password);
@@ -55,6 +67,27 @@ class ReverseEncryptionCommand extends \Symfony\Component\Console\Command\Comman
                 $r->solve();
                 break;
         }
+    }
+
+    private function getPobabilitySumVector()
+    {
+        $seed = 240;
+        $max = 390;
+        $min = 100;
+
+        $idx = 0;
+        $vector = array($seed);
+        do {
+            $idx++;
+            if ($seed + $idx < $max) {
+                $vector[] = $seed + $idx;
+            }
+            if ($seed - $idx > $min) {
+                $vector[] = $seed - $idx;
+            }
+        } while ($seed + $idx < $max && $seed - $idx > $min);
+
+        return $vector;
     }
 
 

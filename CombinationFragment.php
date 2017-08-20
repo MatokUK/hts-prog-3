@@ -3,6 +3,7 @@
 class CombinationFragment extends \InfiniteIterator
 {
     private $firstItem;
+    private $count;
 
     public function __construct($charset)
     {
@@ -11,6 +12,7 @@ class CombinationFragment extends \InfiniteIterator
         }
 
         $this->firstItem = $charset[0];
+        $this->count = count($charset);
 
         parent::__construct(new ArrayIterator($charset));
         $this->rewind();

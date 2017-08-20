@@ -4,21 +4,17 @@ class Combination// implements \Iterator
 {
     private $list;
     private $valid = true;
+    private $possibilities = 1;
 
     public function __construct($list = array())
     {
         $this->fragments = count($list);
 
         foreach ($list as $charset) {
-
-            //var_dump(new InfiniteIterator());
             $it = new CombinationFragment($charset);
-            //$it->rewind();
             $this->list[] = $it;
-
-          //   = $combinationFragment;
+            $this->possibilities *= $it->count();
         }
-
     }
 
     public function valid()
@@ -49,5 +45,10 @@ class Combination// implements \Iterator
             }
             $this->list[$pos]->next();
         }
+    }
+
+    public function getPossibilitiesCount()
+    {
+        return $this->possibilities;
     }
 }

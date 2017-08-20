@@ -22,6 +22,7 @@ function encryptString($strString, $strPassword)
     //var_dump($intMD5Total,$strPasswordMD5);
     $arrEncryptedValues = array();
     $intStrlen = strlen($strString);
+   // printf("[%d]  ", $intMD5Total);
     for ($i = 0; $i < $intStrlen; $i++) {
       //  echo 'ORD '.substr($strString, $i, 1).' - '.ord(substr($strString, $i, 1))."\n";
         //echo 'HEX '.substr($strPasswordMD5, $i%32, 1)."\n";
@@ -32,9 +33,14 @@ function encryptString($strString, $strPassword)
 
        // echo 'NEXT TOTAL '.substr(md5(substr($strString,0,$i+1)), 0, 16)
          //   .  substr(md5($intMD5Total), 0, 16)."\n";
+
+        if ($i < 15)
+        printf("[%d $ %s ## %s] \n", $intMD5Total, substr(md5(substr($strString,0,$i+1)), 0, 16), substr(md5($intMD5Total), 0, 16));
         $intMD5Total = encryptSum(substr(md5(substr($strString,0,$i+1)), 0, 16)
             .  substr(md5($intMD5Total), 0, 16));
+
     }
 
+  //  echo "\n\n\n\n\n\n";
     return implode(' ' , $arrEncryptedValues);
 }

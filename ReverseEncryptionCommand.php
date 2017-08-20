@@ -4,6 +4,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class ReverseEncryptionCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -33,6 +34,8 @@ class ReverseEncryptionCommand extends \Symfony\Component\Console\Command\Comman
         switch ($command) {
             case 'dump':
                 $this->printInfo($password);
+                $output->writeln("\nTotal: ".encryptSum(md5($password)));
+                $output->writeln("\nMD5: ".md5($password));
                 break;
 
             case 'encrypt':
@@ -42,29 +45,42 @@ class ReverseEncryptionCommand extends \Symfony\Component\Console\Command\Comman
                 break;
 
             case 'decrypt':
-                $primes = [2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61 ,67 ,71, 73 ,79, 83, 89 ,97 ,101];
-                foreach ($primes as $prime) {
-                    echo $prime.":";
-                    var_dump(532717637 / $prime);
-                    echo "\n";
-                }
-                exit;
-
                 $sumVector = $this->getPobabilitySumVector();
+               // $sumVector = [253];
 
                 $combination = new Combination(array($sumVector, '0123456789abcdef', '0123456789abcdef', '0123456789abcdef'));
 
-                do {
-                    var_dump($combination->current());
-                    echo "\n";
-                   $combination->next();
-                } while ($combination->valid());
 
-                exit;
+
                 $codes = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.'codes.txt');
                 $encoded = encryptString($codes, $password);
-                $r = new ReverseEncryptor($encoded);
-                $r->solve();
+                $r = new ReverseEncryptor($output, $encoded, $combination);
+
+                /**/
+
+               // exit;
+
+                $possibilities = $r->solve();
+
+               /* foreach ($posiblitities as $item) {
+                    if ('99Z-' ==  $item['plain_text'])
+                        printf("Init Total: %d Text: %s Password: %s | newxt to: %d\n", $item['init_total'], $item['plain_text'], $item['password_hash'], $item['next_total']);
+                }*/
+
+
+                $combination2 = new Combination(array($possibilities, '0123456789abcdef', '0123456789abcdef', '0123456789abcdef'));
+
+                $r2 = new ReverseEncryptorSecond($output, $encoded, $combination2);
+           //     var_dump($r2);
+                $possibilities = $r2->solve();
+                foreach ($possibilities as $item) {
+                    //var_dump($item);exit;
+                   // if (strpos($item['password_hash'], '6f7') !== false && strpos($item['plain_text'], '99Z-KH') !== false)
+                        printf("Init Total: %d Text: %s Password: %s | newxt to: %d\n", $item['init_total'], $item['plain_text'], $item['password_hash'], $item['next_total']);
+                }
+                var_dump(count($possibilities));
+
+
                 break;
         }
     }

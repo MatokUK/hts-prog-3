@@ -11,6 +11,6 @@
         "symfony/console": "^3.3"
     },
     "autoload": {
-        "files": ["ReverseEncryptionCommand.php", "ReverseEncryptor.php", "ReverseEncryptorSecond.php", "Combination.php", "CombinationFragment.php", "prog3.php"]
+        "files": ["ReverseEncryptionCommand.php", "ReverseEncryptor.php", "ReverseEncryptorSecond.php", "Combination.php", "CombinationFragment.php", "prog3.php", "Decryptor.php"]
     }
 }

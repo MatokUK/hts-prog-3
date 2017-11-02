@@ -14,33 +14,22 @@ function encryptSum($md5_string)
 }
 
 
-function encryptString($strString, $strPassword)
+function encryptString($plainText, $password)
 {
     // $strString is the content of the entire file with serials
-    $strPasswordMD5 = md5($strPassword);
-    $intMD5Total = encryptSum($strPasswordMD5);
-    //var_dump($intMD5Total,$strPasswordMD5);
-    $arrEncryptedValues = array();
-    $intStrlen = strlen($strString);
-   // printf("[%d]  ", $intMD5Total);
-    for ($i = 0; $i < $intStrlen; $i++) {
-      //  echo 'ORD '.substr($strString, $i, 1).' - '.ord(substr($strString, $i, 1))."\n";
-        //echo 'HEX '.substr($strPasswordMD5, $i%32, 1)."\n";
+    $passwordMD5 = md5($password);
+    $MD5Total = encryptSum($passwordMD5);
 
-        $arrEncryptedValues[] =  ord(substr($strString, $i, 1))
-                                +  hexdec(substr($strPasswordMD5, $i%32, 1))
-                                -  $intMD5Total;
+    $encrypted = array();
+    $length = strlen($plainText);
 
-       // echo 'NEXT TOTAL '.substr(md5(substr($strString,0,$i+1)), 0, 16)
-         //   .  substr(md5($intMD5Total), 0, 16)."\n";
+    for ($i = 0; $i < $length; $i++) {
+        $encrypted[] =  ord(substr($plainText, $i, 1))
+                                +  hexdec(substr($passwordMD5, $i%32, 1))
+                                -  $MD5Total;
 
-        if ($i < 15)
-        printf("[%d $ %s ## %s] \n", $intMD5Total, substr(md5(substr($strString,0,$i+1)), 0, 16), substr(md5($intMD5Total), 0, 16));
-        $intMD5Total = encryptSum(substr(md5(substr($strString,0,$i+1)), 0, 16)
-            .  substr(md5($intMD5Total), 0, 16));
-
+        $MD5Total = encryptSum(substr(md5(substr($plainText,0,$i+1)), 0, 16).substr(md5($MD5Total), 0, 16));
     }
 
-  //  echo "\n\n\n\n\n\n";
-    return implode(' ' , $arrEncryptedValues);
+    return implode(' ' , $encrypted);
 }
